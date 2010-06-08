@@ -9,17 +9,18 @@
 #import <UIKit/UIKit.h>
 
 @class EAGLView;
-
+@class EAGLContext;
+@class TwoUpOpenGLViewController;
 @interface TwoUpOpenGLAppDelegate : NSObject <UIApplicationDelegate> {
 	
-    UIWindow *m_window;
-    EAGLView *m_upperView;
-    EAGLView *m_lowerView;
+    EAGLContext					*m_context;
+	TwoUpOpenGLViewController	*m_viewController;
+    UIWindow					*m_window;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet EAGLView *upperView;
-@property (nonatomic, retain) IBOutlet EAGLView *lowerView;
+@property (nonatomic, retain) EAGLContext				*context;
+@property (nonatomic, retain) TwoUpOpenGLViewController	*viewController;
+@property (nonatomic, retain) IBOutlet UIWindow			*window;
 
 @end
 

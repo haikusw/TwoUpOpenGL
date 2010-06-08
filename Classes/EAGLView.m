@@ -19,69 +19,117 @@
     return [CAEAGLLayer class];
 }
 
-//The EAGL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
-- (id)initWithCoder:(NSCoder*)coder {    
-    if ((self = [super initWithCoder:coder]))
-    {
-        // Get the layer
-        CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-
-        eaglLayer.opaque = TRUE;
+- (id)initWithCoder:(NSCoder*)coder {
+	
+    if ((self = [super initWithCoder:coder])) {
+		
+        CAEAGLLayer* eaglLayer = (CAEAGLLayer *)self.layer;
+		
+        eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
-
-		if (self.tag == 22) {
-			
-			m_render = [[ES2Renderer alloc] initWithViewTag:self.tag 
-												  frequency:0.200/4.0 
-												 xAmplitude:0.45 
-												 yAmplitude:0.001 
-													  phase:1.0];
-		} else {
-			
-			m_render = [[ES2Renderer alloc] initWithViewTag:self.tag 
-												  frequency:0.200 
-												 xAmplitude:0.001 
-												 yAmplitude:0.25 
-													  phase:-1.0];
-		}
-
-		if (!m_render) {
-			[self release];
-			return nil;
-		}
+										[NSNumber numberWithBool:NO], 
+										kEAGLDrawablePropertyRetainedBacking, 
+										kEAGLColorFormatRGBA8, 
+										kEAGLDrawablePropertyColorFormat, 
+										nil];     
 		
-        animating = FALSE;
-        displayLinkSupported = FALSE;
-		
-        animationFrameInterval = 1;
-        displayLink = nil;
-        animationTimer = nil;
-
-		
-		
-		
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
-//        NSString *reqSysVer = @"3.1";
-//        NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
-//
-//        if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending) {
-//			displayLinkSupported = TRUE;
-//		}
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-		
-		
-		
-		
-    }
-
+    } // if ((self = [super initWithCoder:coder]))
+	
     return self;
 }
+
+- (void)initialize:(EAGLContext*)context {
+	
+	if (self.tag == 22) {
+		
+		m_render = [[ES2Renderer alloc] initWithContext:context 
+												viewTag:self.tag 
+											  frequency:0.200/4.0 
+											 xAmplitude:0.45 
+											 yAmplitude:0.001 
+												  phase:1.0];
+
+	} else {
+		
+		m_render = [[ES2Renderer alloc] initWithContext:context 
+												viewTag:self.tag 
+											  frequency:0.200 
+											 xAmplitude:0.001 
+											 yAmplitude:0.25 
+												  phase:-1.0];
+		
+	}
+		
+	animating				= FALSE;
+	displayLinkSupported	= FALSE;
+	
+	animationFrameInterval	= 1;
+	displayLink				= nil;
+	animationTimer			= nil;
+}
+
+//- (id)initWithCoder:(NSCoder*)coder {    
+//    if ((self = [super initWithCoder:coder]))
+//    {
+//        // Get the layer
+//        CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+//
+//        eaglLayer.opaque = TRUE;
+//        eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
+//
+//		if (self.tag == 22) {
+//			
+//			m_render = [[ES2Renderer alloc] initWithViewTag:self.tag 
+//												  frequency:0.200/4.0 
+//												 xAmplitude:0.45 
+//												 yAmplitude:0.001 
+//													  phase:1.0];
+//		} else {
+//			
+//			m_render = [[ES2Renderer alloc] initWithViewTag:self.tag 
+//												  frequency:0.200 
+//												 xAmplitude:0.001 
+//												 yAmplitude:0.25 
+//													  phase:-1.0];
+//		}
+//
+//		if (!m_render) {
+//			[self release];
+//			return nil;
+//		}
+//		
+//        animating = FALSE;
+//        displayLinkSupported = FALSE;
+//		
+//        animationFrameInterval = 1;
+//        displayLink = nil;
+//        animationTimer = nil;
+//
+//		
+//		
+//		
+//		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+//		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+//		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+////        NSString *reqSysVer = @"3.1";
+////        NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+////
+////        if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending) {
+////			displayLinkSupported = TRUE;
+////		}
+//		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+//		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+//		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+//		
+//		
+//		
+//		
+//		
+//    }
+//
+//    return self;
+//}
 
 - (void)drawView:(id)sender {
     [m_render render];

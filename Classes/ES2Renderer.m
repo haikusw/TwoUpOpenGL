@@ -36,7 +36,8 @@ enum {
 
 @implementation ES2Renderer
 
-- (id)initWithViewTag:(NSUInteger)viewTag 
+- (id)initWithContext:(EAGLContext *)context
+			  viewTag:(NSUInteger)viewTag 
 			frequency:(float)frequency 
 		   xAmplitude:(float)xAmplitude 
 		   yAmplitude:(float)yAmplitude 
@@ -50,13 +51,12 @@ enum {
 		m_yAmplitude = yAmplitude;
 		m_phase		= phase;
 		
-        m_context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-		
-        if (!m_context || ![EAGLContext setCurrentContext:m_context] || ![self loadShaders]) {
+        if (![self loadShaders]) {
 			
             [self release];
             return nil;
-        }
+			
+        } // if (nil == [self loadShaders])
 
 		glGenFramebuffers(1, &m_framebuffer);
 		glGenRenderbuffers(1, &m_colorbuffer);

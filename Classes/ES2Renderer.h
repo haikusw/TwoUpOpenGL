@@ -5,17 +5,19 @@
 //  Created by Douglass Turner on 6/6/10.
 //  Copyright Elastic Image Software LLC 2010. All rights reserved.
 //
-
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/EAGLDrawable.h>
+
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
+@class EAGLContext;
 @interface ES2Renderer : NSObject {
 	
 @private
-    EAGLContext *m_context;
+
+	EAGLContext* m_context;
 
 	NSUInteger m_viewTag;
 	float m_frequency;
@@ -32,7 +34,8 @@
     GLuint m_program;
 }
 
-- (id)initWithViewTag:(NSUInteger)viewTag 
+- (id)initWithContext:(EAGLContext *)context
+			  viewTag:(NSUInteger)viewTag 
 			frequency:(float)frequency 
 		   xAmplitude:(float)xAmplitude 
 		   yAmplitude:(float)yAmplitude 
