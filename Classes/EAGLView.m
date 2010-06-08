@@ -7,7 +7,6 @@
 //
 
 #import "EAGLView.h"
-#import "ES1Renderer.h"
 #import "ES2Renderer.h"
 
 @implementation EAGLView
@@ -46,8 +45,6 @@
 												 yAmplitude:0.25 
 													  phase:-1.0];
 		}
-
-//		renderer = [[ES1Renderer alloc] init];
 
 		if (!renderer) {
 			[self release];
