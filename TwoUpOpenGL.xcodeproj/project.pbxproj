@@ -38,6 +38,7 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3184421611BEA51A00EF1518 /* GlErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlErrors.h; sourceTree = "<group>"; };
 		318D135111BE930D00A66780 /* TwoUpOpenGLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoUpOpenGLViewController.h; sourceTree = "<group>"; };
 		318D135211BE930D00A66780 /* TwoUpOpenGLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoUpOpenGLViewController.m; sourceTree = "<group>"; };
 		318D135311BE930D00A66780 /* TwoUpOpenGLViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TwoUpOpenGLViewController.xib; path = Classes/TwoUpOpenGLViewController.xib; sourceTree = "<group>"; };
@@ -95,6 +96,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				3184421511BEA4F700EF1518 /* Misc. */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -133,6 +135,14 @@
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3184421511BEA4F700EF1518 /* Misc. */ = {
+			isa = PBXGroup;
+			children = (
+				3184421611BEA51A00EF1518 /* GlErrors.h */,
+			);
+			name = Misc.;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

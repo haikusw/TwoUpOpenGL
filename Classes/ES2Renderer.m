@@ -7,6 +7,7 @@
 //
 
 #import "ES2Renderer.h"
+#include "GlErrors.h"
 
 // uniform index
 enum {
@@ -36,6 +37,29 @@ enum {
 
 @implementation ES2Renderer
 
+- (void)dealloc {
+	
+    if (m_framebuffer) {
+		
+        glDeleteFramebuffers(1, &m_framebuffer);
+        m_framebuffer = 0;
+    }
+	
+    if (m_colorbuffer) {
+		
+        glDeleteRenderbuffers(1, &m_colorbuffer);
+        m_colorbuffer = 0;
+    }
+	
+    if (m_program) {
+		
+        glDeleteProgram(m_program);
+        m_program = 0;
+    }
+		
+    [super dealloc];
+}
+
 - (id)initWithContext:(EAGLContext *)context
 			  viewTag:(NSUInteger)viewTag 
 			frequency:(float)frequency 
@@ -45,28 +69,75 @@ enum {
 	
     if ((self = [super init])) {
 		
-		m_viewTag	= viewTag;
-		m_frequency = frequency;
-		m_xAmplitude = xAmplitude;
-		m_yAmplitude = yAmplitude;
-		m_phase		= phase;
+		m_context		= context;
+		m_colorbuffer	= 0;
+		m_framebuffer	= 0;
+		
+		m_program		= 0;
+		
+		m_width			= -1;
+		m_height		= -1;
+		
+		m_viewTag		= viewTag;
+		m_frequency		= frequency;
+		m_xAmplitude	= xAmplitude;
+		m_yAmplitude	= yAmplitude;
+		m_phase			= phase;
 		
         if (![self loadShaders]) {
 			
             [self release];
             return nil;
 			
-        } // if (nil == [self loadShaders])
+        } // if (![self loadShaders])
 
-		glGenFramebuffers(1, &m_framebuffer);
-		glGenRenderbuffers(1, &m_colorbuffer);
-		
-        glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, m_colorbuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorbuffer);
-    }
+    } // if ((self = [super init]))
 	
     return self;
+}
+
+- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer {
+	
+	NSLog(@"ES2 Renderer - resize From Layer");
+	
+	NSLog(@"backing size BEFORE glGetRenderbufferParameter: (%d %d)", m_width, m_height);
+	
+	if (m_colorbuffer) {
+		
+		glDeleteRenderbuffers(1, &m_colorbuffer);
+		m_colorbuffer = 0;
+	}
+		
+	if (m_framebuffer) {
+		
+		glDeleteFramebuffers(1, &m_framebuffer);
+		m_framebuffer = 0;
+	}
+	
+	glGenFramebuffers(1, &m_framebuffer);
+	glGenRenderbuffers(1, &m_colorbuffer);
+	CHECK_GL_ERRORS();
+
+	glBindRenderbuffer(GL_RENDERBUFFER, m_colorbuffer);
+    [m_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
+	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &m_width);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &m_height);
+	CHECK_GL_ERRORS();
+
+	NSLog(@"backing size  AFTER glGetRenderbufferParameter: (%d %d)", m_width, m_height);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorbuffer);
+	CHECK_GL_ERRORS();
+		
+	
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		
+		NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+        return NO;
+    }
+	
+    return YES;
 }
 
 - (void)render {
@@ -337,55 +408,6 @@ enum {
     if (fragShader) glDeleteShader(fragShader);
 
     return TRUE;
-}
-
-- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer
-{
-    // Allocate color buffer backing based on the current layer size
-    glBindRenderbuffer(GL_RENDERBUFFER, m_colorbuffer);
-    [m_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &m_width);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &m_height);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-        return NO;
-    }
-
-    return YES;
-}
-
-- (void)dealloc
-{
-    // Tear down GL
-    if (m_framebuffer)
-    {
-        glDeleteFramebuffers(1, &m_framebuffer);
-        m_framebuffer = 0;
-    }
-
-    if (m_colorbuffer)
-    {
-        glDeleteRenderbuffers(1, &m_colorbuffer);
-        m_colorbuffer = 0;
-    }
-
-    if (m_program)
-    {
-        glDeleteProgram(m_program);
-        m_program = 0;
-    }
-
-    // Tear down context
-    if ([EAGLContext currentContext] == m_context) {
-		[EAGLContext setCurrentContext:nil];
-	}
-
-    [m_context release];
-    m_context = nil;
-
-    [super dealloc];
 }
 
 @end

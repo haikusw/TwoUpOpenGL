@@ -40,6 +40,13 @@
 
 - (void)initialize:(EAGLContext*)context {
 	
+	NSLog(@"EAGL View - initialize EAGL");
+	
+	CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+	
+	NSLog(@"bounds: %f %f %f %f", eaglLayer.bounds.origin.x, eaglLayer.bounds.origin.y, eaglLayer.bounds.size.width, eaglLayer.bounds.size.height);
+	
+	
 	if (self.tag == 22) {
 		
 		m_render = [[ES2Renderer alloc] initWithContext:context 

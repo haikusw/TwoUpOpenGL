@@ -8,6 +8,7 @@
 
 #import "TwoUpOpenGLAppDelegate.h"
 #import "TwoUpOpenGLViewController.h"
+#import "EAGLView.h"
 
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGL.h>
@@ -55,24 +56,24 @@
 	[self.window addSubview:self.viewController.view];
     [self.window makeKeyAndVisible];
 
-//    [self.upperView startAnimation];
-//    [self.lowerView startAnimation];
+    [self.viewController.upperView startAnimation];
+    [self.viewController.lowerView startAnimation];
     return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-//    [self.upperView startAnimation];
-//    [self.lowerView startAnimation];
+    [self.viewController.upperView stopAnimation];
+    [self.viewController.lowerView stopAnimation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-//    [self.upperView startAnimation];
-//    [self.lowerView startAnimation];
+    [self.viewController.upperView startAnimation];
+    [self.viewController.lowerView startAnimation];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-//    [self.upperView startAnimation];
-//    [self.lowerView startAnimation];
+    [self.viewController.upperView stopAnimation];
+    [self.viewController.lowerView stopAnimation];
 }
 
 @end
