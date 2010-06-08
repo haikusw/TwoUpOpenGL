@@ -40,7 +40,8 @@
 	
 	if (nil == m_context) {
 		
-		NSLog(@"Can't create context");
+		NSLog(@"Can't create context ... dying");
+		return NO;
 	}
 	
 	BOOL didIt = NO;
@@ -48,7 +49,8 @@
 	
 	if (didIt == NO) {
 		
-		NSLog(@"Can't set current context");
+		NSLog(@"Can't set current context ... dying");
+		return NO;
 	}
 	
 	self.viewController = [[TwoUpOpenGLViewController alloc] initWithNibName:@"TwoUpOpenGLViewController" 
@@ -58,6 +60,7 @@
 
     [self.viewController.upperView startAnimation];
     [self.viewController.lowerView startAnimation];
+	
     return YES;
 }
 
