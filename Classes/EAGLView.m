@@ -32,21 +32,21 @@
 
 		if (self.tag == 22) {
 			
-			renderer = [[ES2Renderer alloc] initWithViewTag:self.tag 
+			m_render = [[ES2Renderer alloc] initWithViewTag:self.tag 
 												  frequency:0.200/4.0 
 												 xAmplitude:0.45 
 												 yAmplitude:0.001 
 													  phase:1.0];
 		} else {
 			
-			renderer = [[ES2Renderer alloc] initWithViewTag:self.tag 
+			m_render = [[ES2Renderer alloc] initWithViewTag:self.tag 
 												  frequency:0.200 
 												 xAmplitude:0.001 
 												 yAmplitude:0.25 
 													  phase:-1.0];
 		}
 
-		if (!renderer) {
+		if (!m_render) {
 			[self release];
 			return nil;
 		}
@@ -84,11 +84,11 @@
 }
 
 - (void)drawView:(id)sender {
-    [renderer render];
+    [m_render render];
 }
 
 - (void)layoutSubviews {
-    [renderer resizeFromLayer:(CAEAGLLayer*)self.layer];
+    [m_render resizeFromLayer:(CAEAGLLayer*)self.layer];
     [self drawView:nil];
 }
 
@@ -155,7 +155,7 @@
 }
 
 - (void)dealloc {
-    [renderer release];
+    [m_render release];
 
     [super dealloc];
 }

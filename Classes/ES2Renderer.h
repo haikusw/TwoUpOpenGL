@@ -6,13 +6,14 @@
 //  Copyright Elastic Image Software LLC 2010. All rights reserved.
 //
 
-#import "ESRenderer.h"
-
+#import <QuartzCore/QuartzCore.h>
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/EAGLDrawable.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-@interface ES2Renderer : NSObject <ESRenderer>
-{
+@interface ES2Renderer : NSObject {
+	
 @private
     EAGLContext *m_context;
 
