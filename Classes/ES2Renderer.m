@@ -12,10 +12,12 @@
 enum {
     UNIFORM_TRANSLATE,
     UNIFORM_FREQUENCY,
-    UNIFORM_AMPLITUDE,
+    UNIFORM_X_AMPLITUDE,
+    UNIFORM_Y_AMPLITUDE,
     UNIFORM_PHASE,
     NUM_UNIFORMS
 };
+
 GLint uniforms[NUM_UNIFORMS];
 
 // attribute index
@@ -36,30 +38,32 @@ enum {
 
 - (id)initWithViewTag:(NSUInteger)viewTag 
 			frequency:(float)frequency 
-			amplitude:(float)amplitude 
+		   xAmplitude:(float)xAmplitude 
+		   yAmplitude:(float)yAmplitude 
 				phase:(float)phase {
 	
     if ((self = [super init])) {
 		
 		m_viewTag	= viewTag;
 		m_frequency = frequency;
-		m_amplitude	= amplitude;
+		m_xAmplitude = xAmplitude;
+		m_yAmplitude = yAmplitude;
 		m_phase		= phase;
 		
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        m_context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		
-        if (!context || ![EAGLContext setCurrentContext:context] || ![self loadShaders])
-        {
+        if (!m_context || ![EAGLContext setCurrentContext:m_context] || ![self loadShaders]) {
+			
             [self release];
             return nil;
         }
+
+		glGenFramebuffers(1, &m_framebuffer);
+		glGenRenderbuffers(1, &m_colorbuffer);
 		
-        // Create default framebuffer object. The backing will be allocated for the current layer in -resizeFromLayer
-        glGenFramebuffers(1, &defaultFramebuffer);
-        glGenRenderbuffers(1, &colorRenderbuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, m_colorbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorbuffer);
     }
 	
     return self;
@@ -67,8 +71,6 @@ enum {
 
 - (void)render {
 
-//	NSLog(@"render - viewTag: %d", m_viewTag);
-    
     static const GLfloat squareVertices[] = {
         -0.5f, -0.5f,
          0.5f, -0.5f,
@@ -81,12 +83,12 @@ enum {
 
     // This application only creates a single context which is already set current at this point.
     // This call is redundant, but needed if dealing with multiple contexts.
-    [EAGLContext setCurrentContext:context];
+    [EAGLContext setCurrentContext:m_context];
 
     // This application only creates a single default framebuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple framebuffers.
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-    glViewport(0, 0, backingWidth, backingHeight);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+    glViewport(0, 0, m_width, m_height);
 
 	if (m_viewTag == 22) {
 		glClearColor(0.0f, 0.5, 1.0f, 1.0f);
@@ -97,7 +99,7 @@ enum {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Use shader program
-    glUseProgram(program);
+    glUseProgram(m_program);
 
     // Update uniform value
     static float transY = 0.0f;
@@ -105,7 +107,8 @@ enum {
 	transY += 0.08f;	
 
 	glUniform1f(uniforms[UNIFORM_FREQUENCY	], (GLfloat)m_frequency);
-	glUniform1f(uniforms[UNIFORM_AMPLITUDE	], (GLfloat)m_amplitude);
+	glUniform1f(uniforms[UNIFORM_X_AMPLITUDE	], (GLfloat)m_xAmplitude);
+	glUniform1f(uniforms[UNIFORM_Y_AMPLITUDE	], (GLfloat)m_yAmplitude);
 	glUniform1f(uniforms[UNIFORM_PHASE		], (GLfloat)m_phase);
 
 	if (m_viewTag == 22) {
@@ -172,8 +175,8 @@ enum {
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    [context presentRenderbuffer:GL_RENDERBUFFER];
+    glBindRenderbuffer(GL_RENDERBUFFER, m_colorbuffer);
+    [m_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
@@ -262,11 +265,14 @@ enum {
 
 - (BOOL)loadShaders
 {
-    GLuint vertShader, fragShader;
-    NSString *vertShaderPathname, *fragShaderPathname;
+    GLuint vertShader;
+    GLuint fragShader;
+	
+    NSString *vertShaderPathname;
+    NSString *fragShaderPathname;
 
     // Create shader program
-    program = glCreateProgram();
+    m_program = glCreateProgram();
 
     // Create and compile vertex shader
     vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
@@ -285,20 +291,20 @@ enum {
     }
 
     // Attach vertex shader to program
-    glAttachShader(program, vertShader);
+    glAttachShader(m_program, vertShader);
 
     // Attach fragment shader to program
-    glAttachShader(program, fragShader);
+    glAttachShader(m_program, fragShader);
 
     // Bind attribute locations
     // this needs to be done prior to linking
-    glBindAttribLocation(program, ATTRIB_VERTEX, "position");
-    glBindAttribLocation(program, ATTRIB_COLOR, "color");
+    glBindAttribLocation(m_program, ATTRIB_VERTEX, "position");
+    glBindAttribLocation(m_program, ATTRIB_COLOR, "color");
 
     // Link program
-    if (![self linkProgram:program])
+    if (![self linkProgram:m_program])
     {
-        NSLog(@"Failed to link program: %d", program);
+        NSLog(@"Failed to link program: %d", m_program);
 
         if (vertShader)
         {
@@ -310,27 +316,25 @@ enum {
             glDeleteShader(fragShader);
             fragShader = 0;
         }
-        if (program)
+        if (m_program)
         {
-            glDeleteProgram(program);
-            program = 0;
+            glDeleteProgram(m_program);
+            m_program = 0;
         }
         
         return FALSE;
     }
 
     // Get uniform locations
-    uniforms[UNIFORM_TRANSLATE]	= glGetUniformLocation(program, "t");
-//    uniforms[UNIFORM_TRANSLATE]	= glGetUniformLocation(program, "translate");
-    uniforms[UNIFORM_FREQUENCY] = glGetUniformLocation(program, "frequency");
-    uniforms[UNIFORM_AMPLITUDE] = glGetUniformLocation(program, "amplitude");
-    uniforms[UNIFORM_PHASE]		= glGetUniformLocation(program, "phase");
+    uniforms[UNIFORM_TRANSLATE]	= glGetUniformLocation(m_program, "t");
+    uniforms[UNIFORM_FREQUENCY] = glGetUniformLocation(m_program, "frequency");
+    uniforms[UNIFORM_X_AMPLITUDE] = glGetUniformLocation(m_program, "xAmplitude");
+    uniforms[UNIFORM_Y_AMPLITUDE] = glGetUniformLocation(m_program, "yAmplitude");
+    uniforms[UNIFORM_PHASE]		= glGetUniformLocation(m_program, "phase");
 
     // Release vertex and fragment shaders
-    if (vertShader)
-        glDeleteShader(vertShader);
-    if (fragShader)
-        glDeleteShader(fragShader);
+    if (vertShader) glDeleteShader(vertShader);
+    if (fragShader) glDeleteShader(fragShader);
 
     return TRUE;
 }
@@ -338,10 +342,10 @@ enum {
 - (BOOL)resizeFromLayer:(CAEAGLLayer *)layer
 {
     // Allocate color buffer backing based on the current layer size
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_colorbuffer);
+    [m_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &m_width);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &m_height);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -355,30 +359,31 @@ enum {
 - (void)dealloc
 {
     // Tear down GL
-    if (defaultFramebuffer)
+    if (m_framebuffer)
     {
-        glDeleteFramebuffers(1, &defaultFramebuffer);
-        defaultFramebuffer = 0;
+        glDeleteFramebuffers(1, &m_framebuffer);
+        m_framebuffer = 0;
     }
 
-    if (colorRenderbuffer)
+    if (m_colorbuffer)
     {
-        glDeleteRenderbuffers(1, &colorRenderbuffer);
-        colorRenderbuffer = 0;
+        glDeleteRenderbuffers(1, &m_colorbuffer);
+        m_colorbuffer = 0;
     }
 
-    if (program)
+    if (m_program)
     {
-        glDeleteProgram(program);
-        program = 0;
+        glDeleteProgram(m_program);
+        m_program = 0;
     }
 
     // Tear down context
-    if ([EAGLContext currentContext] == context)
-        [EAGLContext setCurrentContext:nil];
+    if ([EAGLContext currentContext] == m_context) {
+		[EAGLContext setCurrentContext:nil];
+	}
 
-    [context release];
-    context = nil;
+    [m_context release];
+    m_context = nil;
 
     [super dealloc];
 }

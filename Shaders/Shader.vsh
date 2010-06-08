@@ -14,7 +14,8 @@ varying vec4 colorVarying;
 //uniform float translate;
 uniform float t;
 uniform float frequency;
-uniform float amplitude;
+uniform float xAmplitude;
+uniform float yAmplitude;
 uniform float phase;
 
 const float _PI = 3.141592653;
@@ -22,8 +23,8 @@ const float _PI = 3.141592653;
 void main()
 {
     gl_Position = position;
-//    gl_Position.y += phase * sin(translate) / 2.0;
-    gl_Position.y += phase * amplitude * sin(2.0 * _PI * t * frequency);
+    gl_Position.x += phase * xAmplitude * sin(2.0 * _PI * t * frequency);
+    gl_Position.y += phase * yAmplitude * sin(2.0 * _PI * t * frequency);
 
     colorVarying = color;
 }

@@ -48,7 +48,7 @@
 					<object class="IBUIView" id="693292207">
 						<reference key="NSNextResponder" ref="62075450"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{184, 84}, {400, 400}}</string>
+						<string key="NSFrame">{{20, 20}, {400, 400}}</string>
 						<reference key="NSSuperview" ref="62075450"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
@@ -61,7 +61,7 @@
 					<object class="IBUIView" id="98857243">
 						<reference key="NSNextResponder" ref="62075450"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{184, 540}, {400, 400}}</string>
+						<string key="NSFrame">{{348, 604}, {400, 400}}</string>
 						<reference key="NSSuperview" ref="62075450"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
@@ -188,7 +188,7 @@
 					<string>UIResponder</string>
 					<string>EAGLView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{173, 4}, {783, 852}}</string>
+					<string>{{265, 4}, {783, 852}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>TwoUpOpenGLAppDelegate</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

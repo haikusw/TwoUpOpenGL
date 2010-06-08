@@ -7,6 +7,7 @@
 //
 
 #import "EAGLView.h"
+#import "ES1Renderer.h"
 #import "ES2Renderer.h"
 
 @implementation EAGLView
@@ -31,18 +32,28 @@
                                         [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 
 		if (self.tag == 22) {
+			
 			renderer = [[ES2Renderer alloc] initWithViewTag:self.tag 
-												  frequency:0.100/4.0 
-												  amplitude:0.45 
+												  frequency:0.200/4.0 
+												 xAmplitude:0.45 
+												 yAmplitude:0.001 
 													  phase:1.0];
 		} else {
+			
 			renderer = [[ES2Renderer alloc] initWithViewTag:self.tag 
 												  frequency:0.200 
-												  amplitude:0.25 
+												 xAmplitude:0.001 
+												 yAmplitude:0.25 
 													  phase:-1.0];
 		}
-		
 
+//		renderer = [[ES1Renderer alloc] init];
+
+		if (!renderer) {
+			[self release];
+			return nil;
+		}
+		
         animating = FALSE;
         displayLinkSupported = FALSE;
 		
@@ -50,12 +61,26 @@
         displayLink = nil;
         animationTimer = nil;
 
-        // A system version of 3.1 or greater is required to use CADisplayLink. The NSTimer
-        // class is used as fallback when it isn't available.
-        NSString *reqSysVer = @"3.1";
-        NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
-        if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending)
-            displayLinkSupported = TRUE;
+		
+		
+		
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+//        NSString *reqSysVer = @"3.1";
+//        NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+//
+//        if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending) {
+//			displayLinkSupported = TRUE;
+//		}
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Don't Use for When There is More Then One EAGL View !!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		
+		
+		
+		
     }
 
     return self;
@@ -65,19 +90,17 @@
     [renderer render];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [renderer resizeFromLayer:(CAEAGLLayer*)self.layer];
     [self drawView:nil];
 }
 
-- (NSInteger)animationFrameInterval
-{
+- (NSInteger)animationFrameInterval {
     return animationFrameInterval;
 }
 
-- (void)setAnimationFrameInterval:(NSInteger)frameInterval
-{
+- (void)setAnimationFrameInterval:(NSInteger)frameInterval {
+	
     // Frame interval defines how many display frames must pass between each time the
     // display link fires. The display link will only fire 30 times a second when the
     // frame internal is two on a display that refreshes 60 times a second. The default
@@ -96,8 +119,7 @@
     }
 }
 
-- (void)startAnimation
-{
+- (void)startAnimation {
     if (!animating)
     {
         if (displayLinkSupported)
@@ -117,8 +139,7 @@
     }
 }
 
-- (void)stopAnimation
-{
+- (void)stopAnimation {
     if (animating)
     {
         if (displayLinkSupported)
@@ -136,8 +157,7 @@
     }
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [renderer release];
 
     [super dealloc];
