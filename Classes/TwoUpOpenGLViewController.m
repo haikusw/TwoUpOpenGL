@@ -11,11 +11,13 @@
 
 @implementation TwoUpOpenGLViewController
 
+@synthesize context = m_context;
 @synthesize upperView = m_upperView;
 @synthesize lowerView = m_lowerView;
 
 - (void)dealloc {
 	
+    [m_context release]; m_context = nil;
     [m_upperView release]; m_upperView = nil; self.upperView = nil;
     [m_lowerView release]; m_lowerView = nil; self.lowerView = nil;
 	
@@ -26,7 +28,7 @@
 	
     if (self = [super initWithNibName:nibNameOrNil bundle:nil]) {
 		
-		m_context = context;
+		self.context = context;
     }
 	
     return self;
@@ -47,9 +49,13 @@
 	
     [super viewDidLoad];
 	
-	[self.upperView initialize:m_context];
-	[self.lowerView initialize:m_context];
+	[self.upperView initialize:self.context];
+	[self.lowerView initialize:self.context];
 	
+}
+
+- (void)viewDidUnload {
+    [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -62,14 +68,6 @@
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
-    // Release any cached data, images, etc that aren't in use.
-}
-
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 @end

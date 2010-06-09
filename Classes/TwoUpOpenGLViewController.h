@@ -16,6 +16,7 @@
 	EAGLView *m_lowerView;
 }
 
+@property (nonatomic, retain) EAGLContext *context;
 @property (nonatomic, retain) IBOutlet EAGLView *upperView;
 @property (nonatomic, retain) IBOutlet EAGLView *lowerView;
 
