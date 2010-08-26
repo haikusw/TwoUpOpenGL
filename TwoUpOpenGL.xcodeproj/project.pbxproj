@@ -20,6 +20,7 @@
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		318D135411BE930D00A66780 /* TwoUpOpenGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 318D135211BE930D00A66780 /* TwoUpOpenGLViewController.m */; };
 		318D135511BE930D00A66780 /* TwoUpOpenGLViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318D135311BE930D00A66780 /* TwoUpOpenGLViewController.xib */; };
+		318DBC581226D7A50085C4B5 /* TwoUpOpenGLIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 318DBC571226D7A50085C4B5 /* TwoUpOpenGLIcon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		318D135111BE930D00A66780 /* TwoUpOpenGLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoUpOpenGLViewController.h; sourceTree = "<group>"; };
 		318D135211BE930D00A66780 /* TwoUpOpenGLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoUpOpenGLViewController.m; sourceTree = "<group>"; };
 		318D135311BE930D00A66780 /* TwoUpOpenGLViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TwoUpOpenGLViewController.xib; path = Classes/TwoUpOpenGLViewController.xib; sourceTree = "<group>"; };
+		318DBC571226D7A50085C4B5 /* TwoUpOpenGLIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TwoUpOpenGLIcon.png; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* TwoUpOpenGL_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoUpOpenGL_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* TwoUpOpenGL-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TwoUpOpenGL-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +121,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				318DBC571226D7A50085C4B5 /* TwoUpOpenGLIcon.png */,
 				318D135311BE930D00A66780 /* TwoUpOpenGLViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* TwoUpOpenGL-Info.plist */,
@@ -191,6 +194,7 @@
 				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				318D135511BE930D00A66780 /* TwoUpOpenGLViewController.xib in Resources */,
+				318DBC581226D7A50085C4B5 /* TwoUpOpenGLIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
